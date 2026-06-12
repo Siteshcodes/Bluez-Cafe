@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cafe Bluez</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+ 
+  :root {
+    --ice-blue: #F0F7FF;
+    --sky-light: #E1EFFE;
+    --deep-blue: #0A192F;
+    --navy: #112240;
+    --royal: #1D4ED8;
+    --electric: #00D2FF;
+    --slate-blue: #4A5568;
+    --silver-text: #8892B0;
+    --white: #FFFFFF;
+  }
+ 
+  html { scroll-behavior: smooth; }
+ 
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--white);
+    color: var(--deep-blue);
+    overflow-x: hidden;
+  }
+ 
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+    padding: 1.2rem 4rem;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: background 0.4s, backdrop-filter 0.4s;
+  }
+  nav.scrolled {
+    background: rgba(240, 247, 255, 0.92);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 1px 0 rgba(10, 25, 47, 0.08);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--deep-blue);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .nav-logo span { color: var(--royal); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.85rem; font-weight: 400; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--navy);
+    text-decoration: none; position: relative; padding-bottom: 2px;
+    transition: color 0.3s;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: 0; left: 0;
+    width: 0; height: 1px; background: var(--royal);
+    transition: width 0.3s;
+  }
+  .nav-links a:hover { color: var(--royal); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta {
+    background: var(--deep-blue); color: var(--ice-blue) !important;
+    padding: 0.55rem 1.4rem; border-radius: 2rem;
+  }
+  .nav-cta:hover { background: var(--royal); color: var(--white) !important; }
+  .hamburger span { background: var(--deep-blue); }
+ 
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    background: var(--ice-blue);
+    display: grid; grid-template-columns: 1fr 1fr;
+    position: relative; overflow: hidden;
+  }
+  .hero-left {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 8rem 4rem 4rem 6rem;
+    position: relative; z-index: 2;
+  }
+  .hero-eyebrow {
+    font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--royal); margin-bottom: 1.5rem; font-weight: 500;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .hero-eyebrow::before { content: ''; display: block; width: 2rem; height: 1px; background: var(--royal); }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 5vw, 5rem);
+    line-height: 1.1; color: var(--deep-blue); margin-bottom: 1.5rem;
+  }
+  .hero-title em { font-style: italic; color: var(--royal); }
+  .hero-desc {
+    font-size: 1.05rem; color: var(--slate-blue); line-height: 1.8;
+    max-width: 420px; margin-bottom: 2.5rem; font-weight: 300;
+  }
+  .btn-primary {
+    background: var(--deep-blue); color: var(--ice-blue);
+    padding: 0.9rem 2.2rem; border-radius: 2rem;
+    font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase;
+    text-decoration: none; transition: all 0.3s; cursor: pointer; border: none;
+  }
+  .btn-primary:hover { background: var(--royal); transform: translateY(-2px); }
+  .btn-outline {
+    border: 1px solid var(--royal); color: var(--royal);
+    padding: 0.9rem 2.2rem; border-radius: 2rem;
+    font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase;
+    text-decoration: none; transition: all 0.3s;
+  }
+  .btn-outline:hover { background: var(--royal); color: var(--white); transform: translateY(-2px); }
+  .hero-right { position: relative; overflow: hidden; background: var(--sky-light); }
+  .hero-img-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(29, 78, 216, 0.1), rgba(0, 210, 255, 0.1)),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%231D4ED8' stroke-width='0.5' opacity='0.2'/%3E%3C/svg%3E") repeat;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-coffee-art {
+    width: 380px; height: 380px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, var(--electric), var(--royal), var(--navy), var(--deep-blue));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8rem; position: relative; animation: float 6s ease-in-out infinite;
+    box-shadow: 0 30px 80px rgba(10, 25, 47, 0.25);
+  }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+  .hero-badge {
+    position: absolute; bottom: 3rem; right: 3rem;
+    background: var(--deep-blue); color: var(--ice-blue);
+    width: 110px; height: 110px; border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; text-align: center;
+    line-height: 1.4; animation: spin-slow 20s linear infinite;
+  }
+  .hero-badge strong { font-size: 1.4rem; font-family: 'Playfair Display', serif; display: block; }
+  @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .scroll-hint { position: absolute; bottom: 2rem; left: 6rem; font-size: 0.75rem; color: var(--slate-blue); text-transform: uppercase; animation: bounce 2s ease-in-out infinite; display: flex; align-items: center; gap: 0.8rem; }
+  .scroll-hint::before { content: '↓'; font-size: 1rem; color: var(--royal); }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+ 
+  /* ── SECTION SHARED ── */
+  section { padding: 6rem 0; }
+  .section-label { font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--royal); display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.8rem; font-weight: 500; }
+  .section-label::before { content: ''; display: block; width: 2rem; height: 1px; background: var(--royal); }
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 3.5vw, 3rem); color: var(--deep-blue); line-height: 1.2; margin-bottom: 1rem; }
+  .section-subtitle { color: var(--slate-blue); font-size: 1rem; line-height: 1.8; font-weight: 300; max-width: 500px; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 3rem; }
+ 
+  /* ── FEATURES ── */
+  #features { background: var(--deep-blue); }
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(255,255,255,0.08); }
+  .feature-card { background: var(--deep-blue); padding: 3rem; transition: background 0.3s; }
+  .feature-card:hover { background: var(--navy); }
+  .feature-icon { font-size: 2.5rem; margin-bottom: 1.5rem; display: block; }
+  .feature-card h3 { font-family: 'Playfair Display', serif; color: var(--electric); font-size: 1.4rem; margin-bottom: 0.8rem; }
+  .feature-card p { color: rgba(240,247,255,0.65); font-size: 0.95rem; line-height: 1.8; font-weight: 300; }
+ 
+  /* ── MENU ── */
+  #menu { background: var(--white); }
+  .menu-tabs { display: flex; gap: 0; border: 1px solid rgba(10,25,47,0.12); border-radius: 2rem; overflow: hidden; margin-bottom: 3rem; }
+  .menu-tab { padding: 0.7rem 1.8rem; font-size: 0.82rem; text-transform: uppercase; border: none; cursor: pointer; background: transparent; color: var(--slate-blue); transition: all 0.3s; }
+  .menu-tab.active { background: var(--deep-blue); color: var(--ice-blue); }
+  .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+  .menu-item { background: var(--ice-blue); border-radius: 1rem; overflow: hidden; transition: all 0.3s; border: 1px solid rgba(10,25,47,0.05); }
+  .menu-item:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(10,25,47,0.12); }
+  .menu-item-img { height: 180px; display: flex; align-items: center; justify-content: center; font-size: 4rem; background: var(--sky-light); position: relative; }
+  .menu-item-body { padding: 1.4rem; }
+  .menu-item-body h4 { font-family: 'Playfair Display', serif; font-size: 1.15rem; margin-bottom: 0.4rem; }
+  .menu-item-body p { font-size: 0.88rem; color: var(--slate-blue); line-height: 1.6; margin-bottom: 1rem; font-weight: 300; }
+  .menu-price { font-size: 1.1rem; font-weight: 500; color: var(--royal); }
+  .menu-add { width: 32px; height: 32px; border-radius: 50%; background: var(--deep-blue); color: var(--ice-blue); border: none; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; }
+  .menu-add:hover { background: var(--royal); transform: scale(1.1); }
+ 
+  /* ── ABOUT ── */
+  #about { background: var(--sky-light); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+  .about-main-card { background: var(--deep-blue); border-radius: 1.5rem; padding: 3rem; color: var(--ice-blue); position: relative; overflow: hidden; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--electric); display: block; }
+  .stat-label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(240,247,255,0.5); }
+  .about-floating { position: absolute; top: -1.5rem; right: -1.5rem; background: var(--electric); color: var(--deep-blue); width: 90px; height: 90px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.65rem; text-align: center; font-weight: 600; }
+  .value-dot { width: 8px; height: 8px; background: var(--royal); border-radius: 50%; margin-top: 0.4rem; flex-shrink: 0; }
+  .value-row p { font-size: 0.95rem; color: var(--navy); line-height: 1.6; font-weight: 300; }
+ 
+  /* ── GALLERY ── */
+  #gallery { background: var(--white); }
+
+  .gallery-mosaic { 
+    display: grid; 
+    grid-template-columns: repeat(4, 1fr); 
+    grid-template-rows: 200px 200px; 
+    gap: 1rem; 
+  }
+
+  .g-cell { 
+    border-radius: 1rem; 
+    overflow: hidden; 
+    cursor: pointer; 
+    transition: all 0.3s; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    background: var(--sky-light); 
+    position: relative; 
+  }
+
+  /* ADDED THIS: This makes your photos fill the boxes properly */
+  .g-cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .g-cell:hover { transform: scale(1.03); box-shadow: 0 15px 40px rgba(10,25,47,0.15); }
+  .g-cell.tall { grid-row: span 2; }
+  .g-cell.wide { grid-column: span 2; }
+
+  .g-cell .g-overlay { 
+    position: absolute; 
+    inset: 0; 
+    background: rgba(10,25,47,0.7); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    transition: opacity 0.3s; 
+    color: var(--ice-blue); 
+    font-family: 'Playfair Display', serif; 
+    font-size: 1.1rem; 
+    opacity: 0; 
+    z-index: 2; /* Keeps the text above the image */
+  }
+
+  .g-cell:hover .g-overlay { opacity: 1; }
+ 
+  /* ── RESERVATIONS ── */
+  #reservations { background: var(--deep-blue); }
+  .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+  .res-form { background: var(--ice-blue); border-radius: 1.5rem; padding: 2.5rem; }
+  .res-form h3 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 1.5rem; color: var(--deep-blue); }
+  .form-group label { display: block; font-size: 0.75rem; text-transform: uppercase; color: var(--navy); margin-bottom: 0.4rem; }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.8rem 1rem; border: 1px solid rgba(10,25,47,0.15); border-radius: 0.6rem; background: var(--white); outline: none; transition: border-color 0.3s; }
+  .form-group input:focus { border-color: var(--royal); }
+ 
+  /* ── CONTACT ── */
+  #contact { background: var(--white); }
+  .contact-card { background: var(--ice-blue); border-radius: 1rem; padding: 2.5rem; text-align: center; border: 1px solid rgba(10,25,47,0.08); transition: transform 0.3s; }
+  .contact-card:hover { transform: translateY(-6px); }
+  .contact-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; color: var(--royal); }
+  .contact-card a { color: var(--royal); text-decoration: none; font-weight: 500; }
+ 
+  /* ── FOOTER ── */
+  footer { background: var(--deep-blue); color: rgba(240,247,255,0.5); padding: 3rem; text-align: center; }
+  footer .footer-logo { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--electric); margin-bottom: 0.5rem; }
+  .footer-links { display: flex; justify-content: center; gap: 2rem; margin: 1.2rem 0; }
+  .footer-links a { color: rgba(240,247,255,0.5); text-decoration: none; font-size: 0.82rem; transition: color 0.3s; }
+  .footer-links a:hover { color: var(--electric); }
+ 
+  /* ── TOAST ── */
+  .toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; background: var(--royal); color: var(--white); padding: 1rem 1.8rem; border-radius: 0.8rem; font-size: 0.9rem; transform: translateY(100px); opacity: 0; transition: all 0.4s; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+ 
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s, transform 0.7s; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+ 
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">Cafe <span>Bluez</span></a>
+  <ul class="nav-links">
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#about">Our Story</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#reservations" class="nav-cta">Reserve</a></li>
+  </ul>
+</nav>
+ 
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Handcrafted Coffee · Fresh Bakes</div>
+    <h1 class="hero-title">Where every sip tells a <em>story.</em></h1>
+    <p class="hero-desc">Specialty brews, warm pastries, and a cozy corner that feels like home. Your neighbourhood escape from the everyday rush.</p>
+    <div class="hero-buttons">
+      <a href="#menu" class="btn-primary">Explore Our Menu</a>
+      <a href="#reservations" class="btn-outline">Book a Table</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-img-bg">
+      <div class="hero-coffee-art">☕</div>
+      <div class="hero-badge"><strong>★ 4.9</strong>Rated by<br>500+ guests</div>
+    </div>
+  </div>
+  <div class="scroll-hint">Scroll to explore</div>
+</section>
+ 
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <span class="feature-icon">🫘</span>
+        <h3>Single-Origin Beans</h3>
+        <p>We source only the finest single-origin beans — roasted in small batches for peak freshness and a perfect profile.</p>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">🥐</span>
+        <h3>Baked Fresh Daily</h3>
+        <p>Our pastries are made from scratch every morning. Freshly baked with real ingredients and zero shortcuts.</p>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">🌿</span>
+        <h3>Sustainably Sourced</h3>
+        <p>From biodegradable cups to fair-trade sourcing, every cup you enjoy supports farmers and the planet we love.</p>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- MENU -->
+<section id="menu">
+  <div class="container">
+    <div class="menu-header" style="margin-bottom:3rem;">
+      <div class="section-label">What we serve</div>
+      <h2 class="section-title">Our Menu</h2>
+    </div>
+    <div class="menu-tabs" id="menu-tabs">
+      <button class="menu-tab active" data-cat="coffee">Coffee</button>
+      <button class="menu-tab" data-cat="tea">Tea & More</button>
+      <button class="menu-tab" data-cat="food">Food</button>
+      <button class="menu-tab" data-cat="desserts">Desserts</button>
+    </div>
+    <div class="menu-grid" id="menu-grid"></div>
+  </div>
+</section>
+ 
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-visual reveal">
+        <div class="about-main-card">
+          <p style="font-family:'Playfair Display', serif; font-size:1.5rem; font-style:italic; line-height:1.5; margin-bottom:1.5rem;">We didn't open a café. We opened a <em>place where strangers become regulars.</em></p>
+          <div class="about-stats">
+            <div class="stat"><span class="stat-num">12K</span><span class="stat-label">Cups/month</span></div>
+            <div class="stat"><span class="stat-num">30+</span><span class="stat-label">Varieties</span></div>
+          </div>
+        </div>
+        <div class="about-floating"><strong>🏆</strong>Best Café<br>Award</div>
+      </div>
+      <div class="reveal">
+        <div class="section-label">Our Story</div>
+        <h2 class="section-title">More than just a café</h2>
+        <p class="section-subtitle">Born from a simple dream — to create a space where good coffee meets genuine connection. Every detail here was chosen with care.</p>
+        <div class="about-values" style="margin-top:2rem; display:flex; flex-direction:column; gap:1rem;">
+          <div class="value-row" style="display:flex; gap:1rem;"><div class="value-dot"></div><p>Our coffee journey is fueled by a passion for quality and the joy of serving a perfect cup.</p></div>
+          <div class="value-row" style="display:flex; gap:1rem;"><div class="value-dot"></div><p>We take pride in our craft, ensuring every drink is prepared with precision and care.</p></div>
+          <div class="value-row" style="display:flex; gap:1rem;"><div class="value-dot"></div><p>Cafe Bluez is designed to be your sanctuary — a place to relax, work, or catch up with friends.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="container">
+    <div class="gallery-intro reveal" style="margin-bottom:3rem;">
+      <div class="section-label">Captured moments</div>
+      <h2 class="section-title">Life at Cafe Bluez</h2>
+    </div>
+    <div class="gallery-mosaic reveal">
+      <div class="g-cell tall"><span>☕</span><div class="g-overlay">Morning Ritual</div></div>
+      <div class="g-cell"><span>🥐</span><div class="g-overlay">Fresh Bakes</div></div>
+      <div class="g-cell"><span>🌿</span><div class="g-overlay">Our Garden</div></div>
+      <div class="g-cell"><span>📖</span><div class="g-overlay">Quiet Corner</div></div>
+      <div class="g-cell wide"><span>✨</span><div class="g-overlay">Golden Hours</div></div>
+      <div class="g-cell"><span>🫖</span><div class="g-overlay">Tea Time</div></div>
+    </div>
+  </div>
+</section>
+ 
+<!-- RESERVATIONS -->
+<section id="reservations">
+  <div class="container">
+    <div class="res-grid">
+      <div class="res-info reveal">
+        <div class="section-label">Book ahead</div>
+        <h2 class="section-title" style="color:var(--ice-blue)">Reserve your table</h2>
+        <p style="color:rgba(240,247,255,0.6)">We recommend reserving for weekends and evenings. Walk-ins are always welcome, but a reserved table guarantees your cozy spot.</p>
+        <div style="margin-top:2rem; color:var(--ice-blue); display:flex; flex-direction:column; gap:1.2rem;">
+          <div><strong>📍 Location</strong><br> C-87, Shiv Park, Ambabari, Shekhawat Marg, Vidhyadhar Nagar, Jaipur</div>
+          <div><strong>📞 Phone</strong><br>+91 8952979257</div>
+        </div>
+      </div>
+      <div class="res-form reveal">
+        <h3>Make a Reservation</h3>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+          <input type="text" placeholder="First Name">
+          <input type="text" placeholder="Last Name">
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+          <input type="date">
+          <input type="time">
+        </div>
+        <button class="btn-primary" style="width:100%;" onclick="showToast('🎉 Table reserved!')">Confirm Reservation</button>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-card reveal">
+        <span class="contact-icon">📍</span>
+        <h4>Visit Us</h4>
+        <p>C-87, Shiv Park, Ambabari, Shekhawat Marg, Vidhyadhar Nagar, Jaipur<br><a href="#">Get Directions →</a></p>
+      </div>
+      <div class="contact-card reveal">
+        <span class="contact-icon">📱</span>
+        <h4>Call Us</h4>
+        <p>+91 8952979257<br><a href="tel:+918952979257">Call Now →</a></p>
+      </div>
+      <div class="contact-card reveal">
+        <span class="contact-icon">📸</span>
+        <h4>Follow Us</h4>
+        <p>@cafebluez_jaipur<br><a href="#">Instagram →</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Cafe Bluez</div>
+  <div class="footer-links">
+    <a href="#menu">Menu</a>
+    <a href="#about">About</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#reservations">Reserve</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <p>© 2026 Cafe Bluez · Made with ☕ & love.</p>
+</footer>
+ 
+<div class="toast" id="toast"></div>
+ 
+<script>
+const menuData = {
+  coffee: [
+    { name: "Signature Espresso", desc: "Double shot, pulled at 9 bars.", price: "₹180", icon: "☕" },
+    { name: "Flat White", desc: "Velvety microfoam over ristretto.", price: "₹220", icon: "🥛" },
+    { name: "Cold Brew", desc: "Steeped 18 hours. Smooth finish.", price: "₹250", icon: "🧊" }
+  ],
+  tea: [
+    { name: "Masala Chai", desc: "Ginger, cardamom, clove mix.", price: "₹120", icon: "🫖" },
+    { name: "Matcha Latte", desc: "Ceremonial grade matcha.", price: "₹260", icon: "🍵" }
+  ],
+  food: [
+    { name: "Avocado Toast", desc: "Sourdough, smashed avo, poached egg.", price: "₹320", icon: "🥑" },
+    { name: "Classic BLT", desc: "Crispy bacon, tomato, iceberg.", price: "₹300", icon: "🥓" }
+  ],
+  desserts: [
+    { name: "Tiramisu", desc: "House-made with espresso.", price: "₹280", icon: "🍰" },
+    { name: "Chocolate Fondant", desc: "Warm, molten centre.", price: "₹300", icon: "🍫" }
+  ]
+};
+ 
+function renderMenu(cat) {
+  const grid = document.getElementById('menu-grid');
+  grid.innerHTML = '';
+  menuData[cat].forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'menu-item';
+    card.innerHTML = `
+      <div class="menu-item-img">${item.icon}</div>
+      <div class="menu-item-body">
+        <h4>${item.name}</h4><p>${item.desc}</p>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="menu-price">${item.price}</span>
+          <button class="menu-add" onclick="showToast('${item.name} added!')">+</button>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+ 
+document.getElementById('menu-tabs').addEventListener('click', e => {
+  if(e.target.classList.contains('menu-tab')) {
+    document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
+    e.target.classList.add('active');
+    renderMenu(e.target.dataset.cat);
+  }
+});
+ 
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+ 
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+});
+ 
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+ 
+renderMenu('coffee');
+</script>
+</body>
+</html>
